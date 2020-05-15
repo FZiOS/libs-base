@@ -17,7 +17,7 @@ install_gnustep_make() {
     fi
     ./configure --prefix=$DEP_ROOT --with-library-combo=$LIBRARY_COMBO $WITH_RUNTIME_ABI
     make install
-    echo Objective-C build flags: `$HOME/staging/bin/gnustep-config --objc-flags`
+    echo Objective-C build flags: `$DEP_ROOT/bin/gnustep-config --objc-flags`
 }
 
 install_ng_runtime() {
@@ -33,7 +33,12 @@ install_ng_runtime() {
     export CC="clang"
     export CXX="clang++"
     export CXXFLAGS="-std=c++11"
-    cmake -DTESTS=off -DCMAKE_BUILD_TYPE=RelWithDebInfo -DGNUSTEP_INSTALL_TYPE=NONE -DCMAKE_INSTALL_PREFIX:PATH=$DEP_ROOT ../
+    cmake \
+      -DTESTS=off \
+      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+      -DGNUSTEP_INSTALL_TYPE=NONE \
+      -DCMAKE_INSTALL_PREFIX:PATH=$DEP_ROOT \
+      ../
     make install
 }
 
@@ -48,7 +53,14 @@ install_libdispatch() {
     export LIBRARY_PATH=$DEP_ROOT/lib;
     export LD_LIBRARY_PATH=$DEP_ROOT/lib:$LD_LIBRARY_PATH;
     export CPATH=$DEP_ROOT/include;
-    cmake -DBUILD_TESTING=off -DCMAKE_BUILD_TYPE=RelWithDebInfo  -DCMAKE_INSTALL_PREFIX:PATH=$HOME/staging -DINSTALL_PRIVATE_HEADERS=1 -DBlocksRuntime_INCLUDE_DIR=$DEP_ROOT/include -DBlocksRuntime_LIBRARIES=$DEP_ROOT/lib/libobjc.so ../
+    cmake \
+      -DBUILD_TESTING=off \
+      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+      -DCMAKE_INSTALL_PREFIX:PATH=$DEP_ROOT \
+      -DINSTALL_PRIVATE_HEADERS=1 \
+      -DBlocksRuntime_INCLUDE_DIR=$DEP_ROOT/include \
+      -DBlocksRuntime_LIBRARIES=$DEP_ROOT/lib/libobjc.so \
+      ../
     make install
 }
 
