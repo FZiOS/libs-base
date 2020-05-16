@@ -118,11 +118,9 @@ before_script: |
     export GNUSTEP_MAKEFILES=$DEP_ROOT/share/GNUstep/Makefiles
     . $GNUSTEP_MAKEFILES/GNUstep.sh
 script:
-    - $shell env
-    - $shell gnustep-config --objc-flags
-    - $shell gnustep-tests --help
     - $shell ./configure $BASE_ABI || (cat config.log && false)
-    - $shell make && make install && make check || (cat Tests/tests.log && false)
+    - $shell make && make install
+    - $shell make check || (cat Tests/tests.log && false)
 
 # set up packages cache (currently used on Windows only)
 before_cache: |
