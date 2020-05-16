@@ -112,7 +112,7 @@ before_script: |
         ;;
     windows)
         # create symlinks for dependency binaries, as PATH is not passed into MSYS environment
-        ln -s $DEP_ROOT/bin/* /C/tools/msys64/$MSYSTEM/bin/
+        ln -sf $DEP_ROOT/bin/* /C/tools/msys64/$MSYSTEM/bin/
         ;;
     esac
     export GNUSTEP_MAKEFILES=$DEP_ROOT/share/GNUstep/Makefiles
