@@ -23,9 +23,12 @@ jobs:
           os: linux
           compiler: clang
           env: LIBRARY_COMBO=ng-gnu-gnu RUNTIME_VERSION=gnustep-2.0 BASE_ABI=--disable-mixedabi
-        - name: "Windows GCC"
+        - name: "Windows GCC MinGW-w64 i686"
           os: windows
-          env: LIBRARY_COMBO=gnu-gnu-gnu
+          env: LIBRARY_COMBO=gnu-gnu-gnu MSYSTEM=mingw32 ARCH=i686
+        - name: "Windows GCC MinGW-w64 x86_64"
+          os: windows
+          env: LIBRARY_COMBO=gnu-gnu-gnu MSYSTEM=mingw64 ARCH=x86_64
     # allow Windows builds to fail (remove once all tests are passing on Windows)
     allow_failures:
         - os: windows
@@ -67,11 +70,11 @@ before_install: |
         export msys2='cmd //C RefreshEnv.cmd '
         export msys2+='& set MSYS=winsymlinks:nativestrict '
         export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
-        export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
+        export shell="$msys2 -$MSYSTEM -full-path -here -c "\"\$@"\" --"
         export msys2+=" -msys2 -c "\"\$@"\" --"
         ## Install MSYS2 packages required by GNUstep
         $msys2 pacman --sync --noconfirm --needed \
-            mingw-w64-x86_64-gcc-objc \
+            mingw-w64-$ARCH-gcc-objc \
             make \
             pkg-config \
             libxml2-devel \
@@ -79,19 +82,18 @@ before_install: |
             libffi-devel \
             libgnutls-devel \
             icu-devel \
-            mingw-w64-x86_64-pkg-config \
-            mingw-w64-x86_64-libxml2 \
-            mingw-w64-x86_64-libxslt \
-            mingw-w64-x86_64-libffi \
-            mingw-w64-x86_64-gnutls \
-            mingw-w64-x86_64-icu \
+            mingw-w64-$ARCH-pkg-config \
+            mingw-w64-$ARCH-libxml2 \
+            mingw-w64-$ARCH-libxslt \
+            mingw-w64-$ARCH-libffi \
+            mingw-w64-$ARCH-gnutls \
+            mingw-w64-$ARCH-icu \
         ##
         taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
-        export PATH=/C/tools/msys64/mingw64/bin:$PATH
-        export MAKE=mingw32-make  # so that Autotools can find it
+        export PATH=/C/tools/msys64/$MSYSTEM/bin:$PATH
         ;;
     esac
-install: $mingw64 ./travis-deps.sh
+install: $shell ./travis-deps.sh
 before_script: |
     DEP_ROOT=$HOME/staging
     export LIBRARY_PATH=$DEP_ROOT/lib:$DEP_ROOT/lib64:$LIBRARY_PATH
@@ -108,11 +110,11 @@ before_script: |
     export GNUSTEP_MAKEFILES=$DEP_ROOT/share/GNUstep/Makefiles
     . $GNUSTEP_MAKEFILES/GNUstep.sh
 script:
-    - $mingw64 env
-    - $mingw64 gnustep-config --objc-flags
-    - $mingw64 gnustep-tests --help
-    - $mingw64 ./configure $BASE_ABI || (cat config.log && false)
-    - $mingw64 make && make install && make check || (cat Tests/tests.log && false)
+    - $shell env
+    - $shell gnustep-config --objc-flags
+    - $shell gnustep-tests --help
+    - $shell ./configure $BASE_ABI || (cat config.log && false)
+    - $shell make && make install && make check || (cat Tests/tests.log && false)
 
 # set up packages cache (currently used on Windows only)
 before_cache: |
