@@ -106,7 +106,15 @@ before_script: |
         export CPATH=$DEP_ROOT/include
         ;;
     esac
-    export PATH=$DEP_ROOT/bin:$PATH
+    case $TRAVIS_OS_NAME in
+    linux)
+        export PATH=$DEP_ROOT/bin:$PATH
+        ;;
+    windows)
+        # create symlinks for dependency binaries, as PATH is not passed into MSYS environment
+        ln -s $DEP_ROOT/bin/* /C/tools/msys64/$MSYSTEM/bin/
+        ;;
+    esac
     export GNUSTEP_MAKEFILES=$DEP_ROOT/share/GNUstep/Makefiles
     . $GNUSTEP_MAKEFILES/GNUstep.sh
 script:
