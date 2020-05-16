@@ -119,7 +119,8 @@ before_script: |
     . $GNUSTEP_MAKEFILES/GNUstep.sh
 script:
     - $shell ./configure $BASE_ABI || (cat config.log && false)
-    - $shell make && make install
+    - $shell make
+    - $shell make install
     - $shell make check || (cat Tests/tests.log && false)
 
 # set up packages cache (currently used on Windows only)
