@@ -17,7 +17,7 @@ install_gnustep_make() {
     fi
     $mingw ./configure --prefix=$DEP_ROOT --with-library-combo=$LIBRARY_COMBO $WITH_RUNTIME_ABI
     $mingw make install
-    echo Objective-C build flags: `$DEP_ROOT/bin/gnustep-config --objc-flags`
+    $mingw echo Objective-C build flags: `$DEP_ROOT/bin/gnustep-config --objc-flags`
 }
 
 install_ng_runtime() {
