@@ -114,8 +114,8 @@ before_script: |
         export PATH=$DEP_ROOT/bin:$PATH
         ;;
     windows)
-        # create symlinks for dependency binaries, as PATH is not passed into MSYS environment
-        ln -sf $DEP_ROOT/bin/* /C/tools/msys64/$MSYSTEM/bin/
+        # set PATH inside MinGW shell, as it will not be passed in
+        export mingw="$mingw PATH=$DEP_ROOT/bin:\$PATH "
         ;;
     esac
     export GNUSTEP_MAKEFILES=$DEP_ROOT/share/GNUstep/Makefiles
