@@ -70,7 +70,7 @@ before_install: |
         export msys2='cmd //C RefreshEnv.cmd '
         export msys2+='& set MSYS=winsymlinks:nativestrict '
         export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
-        export shell="$msys2 -$MSYSTEM -full-path -here -c "\"\$@"\" --"
+        export mingw="$msys2 -$MSYSTEM -full-path -here -c "\"\$@"\" --"
         export msys2+=" -msys2 -c "\"\$@"\" --"
         ## Install MSYS2 packages required by GNUstep
         $msys2 pacman --sync --noconfirm --needed \
@@ -93,7 +93,7 @@ before_install: |
         export PATH=/C/tools/msys64/$MSYSTEM/bin:$PATH
         ;;
     esac
-install: $shell ./travis-deps.sh
+install: ./travis-deps.sh
 before_script: |
     DEP_ROOT=$HOME/staging
     export LIBRARY_PATH=$DEP_ROOT/lib:$DEP_ROOT/lib64:$LIBRARY_PATH
@@ -118,10 +118,9 @@ before_script: |
     export GNUSTEP_MAKEFILES=$DEP_ROOT/share/GNUstep/Makefiles
     . $GNUSTEP_MAKEFILES/GNUstep.sh
 script:
-    - $shell ./configure $BASE_ABI || (cat config.log && false)
-    - $shell make
-    - $shell make install
-    - $shell make check || (cat Tests/tests.log && false)
+    # configure and make need to be executed via MinGW shell on Windows ($mingw is undefined on Linux)
+    - $mingw ./configure $BASE_ABI || (cat config.log && false)
+    - $mingw make && $mingw make install && $mingw make check || (cat Tests/tests.log && false)
 
 # set up packages cache (currently used on Windows only)
 before_cache: |

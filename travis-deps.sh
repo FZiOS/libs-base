@@ -15,8 +15,8 @@ install_gnustep_make() {
     else
         WITH_RUNTIME_ABI=""
     fi
-    ./configure --prefix=$DEP_ROOT --with-library-combo=$LIBRARY_COMBO $WITH_RUNTIME_ABI
-    make install
+    $mingw ./configure --prefix=$DEP_ROOT --with-library-combo=$LIBRARY_COMBO $WITH_RUNTIME_ABI
+    $mingw make install
     echo Objective-C build flags: `$DEP_ROOT/bin/gnustep-config --objc-flags`
 }
 
