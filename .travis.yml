@@ -91,6 +91,9 @@ before_install: |
         ##
         taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
         export PATH=/C/tools/msys64/$MSYSTEM/bin:$PATH
+        ## disable conversion to native-form paths when configuring GNUstep Make in travis-deps.sh
+        ## https://www.msys2.org/wiki/Porting/#filesystem-namespaces
+        export MSYS2_ARG_CONV_EXCL=--prefix=
         ;;
     esac
 install: ./travis-deps.sh
